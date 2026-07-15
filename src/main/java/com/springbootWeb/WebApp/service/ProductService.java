@@ -1,6 +1,8 @@
 package com.springbootWeb.WebApp.service;
 
 import com.springbootWeb.WebApp.model.Product;
+import com.springbootWeb.WebApp.repository.ProductRepo;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -10,41 +12,32 @@ import java.util.List;
 @Service
 public class ProductService {
 
-    List<Product> products = new ArrayList<>(Arrays.asList(
-            new Product(101,"Iphone", 50000),
-            new Product(102,"CMF Phone 2 PRO", 25000),
-            new Product(103,"Samsung ZFold", 70000)));
+    @Autowired
+    ProductRepo repo;
+
+//    List<Product> products = new ArrayList<>(Arrays.asList(
+//            new Product(101,"Iphone", 50000),
+//            new Product(102,"CMF Phone 2 PRO", 25000),
+//            new Product(103,"Samsung ZFold", 70000)));
 
     public List<Product> getProducts(){
-        return products;
+        return repo.findAll();
     }
 
     public Product getProductById(int prodId) {
-        return products.stream()
-                .filter(p -> p.getProdId() == prodId)
-                .findFirst().get();
+        return repo.findById(prodId).orElse(new Product());
     }
 
     public void addProduct(Product prod){
-        products.add(prod);
+        repo.save(prod);
     }
 
     public void updateProduct(Product prod) {
-        for(Product item : products){
-            if(item.getProdId() == prod.getProdId()){
-                products.set(products.indexOf(item), prod);
-                break;
-            }
-        }
+        repo.save(prod);
     }
 
     public void deleteProduct(int prodId) {
-        for(Product item : products){
-            if(item.getProdId() == prodId){
-                products.remove(item);
-                break;
-            }
-        }
+        repo.deleteById(prodId);
     }
 }
 
